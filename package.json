@@ -1,0 +1,25 @@
+{
+  "name": "node-native-hello",
+  "version": "1.0.0",
+  "description": "A simple Node.js native addon example using N-API",
+  "main": "test.js",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "nodejs",
+    "n-api",
+    "native",
+    "addon",
+    "c++"
+  ],
+  "author": "",
+  "license": "MIT",
+  "gypfile": true,
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^7.0.0"
+  }
+} 
