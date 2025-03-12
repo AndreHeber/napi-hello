@@ -1,0 +1,151 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+{
+  "rules": [
+    {
+      "name": "Node-API Version Check",
+      "pattern": "NAPI_VERSION",
+      "message": "Ensure NAPI_VERSION is defined before including node_api.h to target specific Node-API versions",
+      "severity": "warning"
+    },
+    {
+      "name": "Node-API Error Handling",
+      "pattern": "napi_status",
+      "message": "Always check napi_status return values for error handling",
+      "severity": "error"
+    },
+    {
+      "name": "Memory Management",
+      "pattern": "(malloc|new)(?!.*delete|free)",
+      "message": "Ensure proper memory cleanup with corresponding delete/free",
+      "severity": "error"
+    },
+    {
+      "name": "Node-API Function Declaration",
+      "pattern": "napi_value\\s+\\w+\\s*\\([^)]*\\)\\s*{(?![^}]*napi_env)",
+      "message": "Node-API functions should have napi_env as their first parameter",
+      "severity": "error"
+    },
+    {
+      "name": "Exception Handling",
+      "pattern": "throw\\s+",
+      "message": "Use napi_throw_error instead of C++ exceptions in Node-API code",
+      "severity": "error"
+    },
+    {
+      "name": "Reference Counting",
+      "pattern": "napi_create_reference",
+      "message": "Ensure reference counting with napi_create_reference is balanced with napi_delete_reference",
+      "severity": "warning"
+    },
+    {
+      "name": "Thread Safety",
+      "pattern": "pthread|std::thread",
+      "message": "Use napi_create_async_work for async operations instead of raw threads",
+      "severity": "warning"
+    },
+    {
+      "name": "Module Initialization",
+      "pattern": "napi_module_register",
+      "message": "Use NAPI_MODULE_INIT macro for module initialization unless special handling is needed",
+      "severity": "info"
+    },
+    {
+      "name": "Property Descriptor",
+      "pattern": "napi_property_descriptor(?![^;]*NAPI_[A-Z_]+)",
+      "message": "Use NAPI_DEFINE macros for simpler property descriptor definition",
+      "severity": "info"
+    },
+    {
+      "name": "Include Guards",
+      "pattern": "^(?!#ifndef\\s+\\w+_H).*\\.h$",
+      "message": "Header files should have include guards",
+      "severity": "warning"
+    },
+    {
+      "name": "C++ Standard",
+      "pattern": "std::(auto_ptr|binary_function|unary_function)",
+      "message": "Avoid deprecated C++ features, use modern alternatives",
+      "severity": "warning"
+    },
+    {
+      "name": "Binding Configuration",
+      "pattern": "'targets':\\s*\\[\\s*{[^}]*'sources':\\s*\\[[^\\]]*\\]\\s*}\\s*\\]",
+      "filePattern": "binding\\.gyp$",
+      "message": "Ensure binding.gyp includes all necessary source files and configurations",
+      "severity": "error"
+    },
+    {
+      "name": "Node Version Compatibility",
+      "pattern": "\"engines\":\\s*{[^}]*\"node\":\\s*\"[^\"]*\"[^}]*}",
+      "filePattern": "package\\.json$",
+      "message": "Specify Node.js version requirements in package.json",
+      "severity": "warning"
+    },
+    {
+      "name": "Native Module Loading",
+      "pattern": "require\\(['\"]\\.\\/build\\/Release\\/",
+      "filePattern": "\\.js$",
+      "message": "Consider using bindings package for more robust native module loading",
+      "severity": "info"
+    },
+    {
+      "name": "Async Work Queue",
+      "pattern": "uv_queue_work",
+      "message": "Prefer napi_create_async_work over direct libuv calls",
+      "severity": "warning"
+    },
+    {
+      "name": "Type Checking",
+      "pattern": "napi_typeof(?![^;]*napi_[a-z_]+_type)",
+      "message": "Always validate argument types using napi_typeof",
+      "severity": "warning"
+    },
+    {
+      "name": "Buffer Handling",
+      "pattern": "napi_get_buffer_info",
+      "message": "Check buffer length and validate bounds when accessing buffer data",
+      "severity": "warning"
+    },
+    {
+      "name": "Error Propagation",
+      "pattern": "return\\s+nullptr;",
+      "message": "Set error with napi_throw_error before returning nullptr",
+      "severity": "error"
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "Build Native Extension",
+      "command": "node-gyp rebuild",
+      "description": "Rebuild the native extension"
+    },
+    {
+      "name": "Clean Build",
+      "command": "node-gyp clean && node-gyp configure && node-gyp build",
+      "description": "Clean and rebuild the native extension"
+    },
+    {
+      "name": "Debug Build",
+      "command": "node-gyp rebuild --debug",
+      "description": "Build the native extension with debug symbols"
+    }
+  ],
+  "fileTemplates": {
+    "nativeModule": {
+      "filename": "{name}.cc",
+      "content": "#include <node_api.h>\n\nnapi_value Init(napi_env env, napi_value exports) {\n  return exports;\n}\n\nNAPI_MODULE(NODE_GYP_MODULE_NAME, Init)"
+    },
+    "headerFile": {
+      "filename": "{name}.h",
+      "content": "#ifndef {NAME}_H\n#define {NAME}_H\n\n#include <node_api.h>\n\n#endif // {NAME}_H"
+    },
+    "bindingGyp": {
+      "filename": "binding.gyp",
+      "content": "{\n  'targets': [{\n    'target_name': '{name}',\n    'sources': [ '{name}.cc' ],\n    'include_dirs': [],\n    'cflags!': [ '-fno-exceptions' ],\n    'cflags_cc!': [ '-fno-exceptions' ],\n    'conditions': [\n      ['OS==\"win\"', {\n        'msvs_settings': {\n          'VCCLCompilerTool': { 'ExceptionHandling': 1 }\n        }\n      }]\n    ]\n  }]\n}"
+    }
+  }
+} 
