@@ -8,6 +8,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     build-essential \
     sudo \
     curl \
+    openssh-client \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,8 +34,9 @@ RUN adduser node sudo \
     && chmod 0440 /etc/sudoers.d/node
 
 # Create and set up directories for node user
-RUN mkdir -p /home/node/.npm-global \
+RUN mkdir -p /home/node/.npm-global /home/node/.ssh \
     && chown -R node:node /home/node \
+    && chmod 700 /home/node/.ssh \
     && chmod -R 755 /home/node/.npm-global
 
 # Set up environment variables for the node user

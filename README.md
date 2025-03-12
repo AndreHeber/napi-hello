@@ -11,6 +11,26 @@ This project demonstrates how to create a simple native addon for Node.js using 
   - **macOS**: Xcode Command Line Tools (`xcode-select --install`)
   - **Linux**: GCC and development tools (`build-essential` package)
 
+## Development Container
+
+This project includes a Visual Studio Code Dev Container configuration. Using the dev container provides a consistent development environment with all necessary tools pre-installed.
+
+### Using the Dev Container
+
+1. Install [Visual Studio Code](https://code.visualstudio.com/)
+2. Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+3. Clone this repository and open it in VS Code
+4. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command from the command palette
+
+The container includes:
+- Node.js and npm
+- node-gyp
+- C++ build tools
+- Required VS Code extensions
+- Git with SSH key forwarding
+
+All dependencies will be automatically installed, and you can start development immediately without manually setting up your environment.
+
 ## Project Structure
 
 ```

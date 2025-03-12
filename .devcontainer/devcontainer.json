@@ -25,5 +25,8 @@
 	"remoteUser": "node",
 	"updateRemoteUserUID": true,
 	"forwardPorts": [],
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached"
+	],
 	"postCreateCommand": "npm install -g node-gyp"
 } 
